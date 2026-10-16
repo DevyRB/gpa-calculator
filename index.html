@@ -179,6 +179,14 @@
     .gpax-inputs { gap: 10px; padding: 12px; }
     .gpax-input { width: 60px !important; }
   }
+
+  /* แท็บเล็ต/ไอแพด: คงรูปแบบตารางเหมือนคอม แต่ย่อให้พอดีจอ ไม่ต้องเลื่อนแนวนอน */
+  @media (min-width: 601px) and (max-width: 1024px) {
+    table.gradeTable { font-size: 12px; }
+    table.gradeTable th, table.gradeTable td { padding: 3px; }
+    table.gradeTable input, table.gradeTable select { min-width: 46px; }
+    .name-cell input { min-width: 130px; }
+  }
 </style>
 </head>
 <body>
