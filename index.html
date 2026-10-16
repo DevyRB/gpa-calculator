@@ -26,6 +26,23 @@
   .navbar .spacer { flex: 1; }
   .navbar .reset-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; }
   .navbar .reset-link:hover { text-decoration: underline; }
+  .navbar .help-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; margin-right: 16px; }
+  .navbar .help-link:hover { text-decoration: underline; }
+  .navbar .ig-link { display: flex; align-items: center; margin-left: 16px; }
+  .navbar .ig-icon { height: 36px; width: 36px; border-radius: 8px; object-fit: cover; }
+
+  /* ===== Help modal ===== */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 2000; padding: 16px; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: #FCFCFC; border-radius: 8px; max-width: 640px; width: 100%; max-height: 85vh; overflow-y: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.3); }
+  .modal-header { background: #666666; color: #fff; font-weight: bold; font-size: 17px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; }
+  .modal-close { cursor: pointer; font-size: 22px; line-height: 1; background: none; border: none; color: #fff; }
+  .modal-body { padding: 16px 22px 22px; color: #333; font-size: 15px; line-height: 1.75; }
+  .modal-body h3 { color: #005959; font-size: 16px; margin: 16px 0 6px; }
+  .modal-body h3:first-child { margin-top: 0; }
+  .modal-body ol, .modal-body ul { margin: 0 0 8px 22px; padding: 0; }
+  .modal-body li { margin-bottom: 5px; }
+  .modal-body code { background: #eef6f6; padding: 1px 6px; border-radius: 3px; color: #005959; }
 
   .main { padding: 16px; margin-top: 55px; max-width: 1400px; margin-left: auto; margin-right: auto; }
   .page-title { text-align: center; font-size: 24px; font-weight: bold; color: #000; margin: 6px 0 18px; }
@@ -135,7 +152,9 @@
     <img class="logo" src="assets_1/img/weschoollogo.png" alt="logo">
     <span class="brand">GPA Calculator System<span class="brand-by">By Sonny Warin</span></span>
     <span class="spacer"></span>
+    <span class="help-link" id="helpBtn">ช่วยเหลือ?</span>
     <span class="reset-link" id="resetBtn">รีเซ็ตข้อมูล</span>
+    <a class="ig-link" href="https://www.instagram.com/sonnysiteup_/" target="_blank" rel="noopener" title="Instagram @sonnysiteup_"><img class="ig-icon" src="assets_1/img/instagram.png" alt="Instagram"></a>
   </div>
 
   <div class="main">
@@ -169,6 +188,44 @@
   </div>
 
   <div id="toast" class="toast"></div>
+
+  <div class="modal-overlay" id="helpModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>วิธีใช้งานเว็บคำนวณผลการเรียน</span>
+        <button class="modal-close" id="helpClose" type="button" aria-label="ปิด">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h3>ภาพรวม</h3>
+        <p>เว็บนี้ช่วยคำนวณเกรดรายวิชา ผลการเรียนเฉลี่ย (GPA) ของแต่ละภาคเรียน และ GPAX 5 เทอม โดยกรอกคะแนนแล้วระบบคิดเกรดให้อัตโนมัติ ข้อมูลที่กรอกจะถูกบันทึกไว้ในเบราว์เซอร์ของคุณโดยอัตโนมัติ</p>
+
+        <h3>ขั้นตอนการใช้งาน</h3>
+        <ol>
+          <li><b>ข้อมูลนักเรียน</b> — กรอกชื่อ-สกุล เลขประจำตัว ห้อง เลขที่ (ไม่บังคับ)</li>
+          <li><b>แต่ละภาคเรียน</b> — แก้รหัสวิชา/ชื่อวิชาได้ เลือก <code>หน่วยกิต</code> ของแต่ละวิชาจากช่อง dropdown (0, 0.5, 1, 1.5, 2)</li>
+          <li><b>คะแนนรวมหน่วย</b> — กด <code>+</code> เพื่อเพิ่มช่องย่อยได้หลายช่อง (ผลรวมทุกช่องต้องไม่เกิน 50) กด <code>&times;</code> เพื่อลบช่อง</li>
+          <li><b>กลางภาค</b> ไม่เกิน 20 และ <b>ปลายภาค</b> ไม่เกิน 30 ช่อง <b>รวมคะแนน</b> จะบวกให้อัตโนมัติ (ไม่เกิน 100)</li>
+          <li><b>ระดับคะแนน</b> คิดอัตโนมัติ: 80+ = 4, 75 = 3.5, 70 = 3, 65 = 2.5, 60 = 2, 55 = 1.5, 50 = 1, ต่ำกว่า 50 = 0</li>
+          <li>วิชาที่มี <b>หน่วยกิต 0</b> จะเลือกเกรดเป็น <code>ผ</code> / <code>มผ</code> เองได้</li>
+          <li><b>หน่วยกิตรวมสูงสุด</b> ใช้กำหนดเพดานหน่วยกิตรวมของแต่ละภาค กันเลือกเกิน</li>
+          <li><b>สรุปผลการเรียน</b> จะแสดงรวมหน่วยกิตและ GPA ของภาคนั้น</li>
+        </ol>
+
+        <h3>คิด GPAX 5 เทอม</h3>
+        <ol>
+          <li>เลื่อนลงล่างสุดที่กล่อง <b>คำนวณ GPAX 5 เทอม</b></li>
+          <li>กรอก GPA ของแต่ละเทอมทั้ง 5 ช่อง (ม.4 เทอม 1 ถึง ม.6 เทอม 1)</li>
+          <li>เมื่อกรอกครบ 5 ช่อง ระบบจะคำนวณ GPAX ให้อัตโนมัติ (ผลรวม &divide; 5)</li>
+        </ol>
+
+        <h3>การบันทึกและรีเซ็ต</h3>
+        <ul>
+          <li>ข้อมูลถูกบันทึกอัตโนมัติในเบราว์เซอร์นี้ เปิดใหม่แล้วข้อมูลยังอยู่</li>
+          <li>กด <b>รีเซ็ตข้อมูล</b> ที่แถบด้านบน เพื่อล้างทั้งหมดกลับเป็นค่าเริ่มต้น</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
 <script>
 (function () {
@@ -732,6 +789,14 @@
         location.reload();
       }
     });
+
+    var helpModal = document.getElementById("helpModal");
+    function openHelp() { helpModal.classList.add("open"); }
+    function closeHelp() { helpModal.classList.remove("open"); }
+    document.getElementById("helpBtn").addEventListener("click", openHelp);
+    document.getElementById("helpClose").addEventListener("click", closeHelp);
+    helpModal.addEventListener("click", function (e) { if (e.target === helpModal) closeHelp(); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeHelp(); });
   }
 
   document.addEventListener("DOMContentLoaded", init);
