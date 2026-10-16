@@ -22,21 +22,12 @@
   }
   .navbar .logo { height: 42px; width: 42px; border-radius: 6px; margin-right: 12px; object-fit: cover; }
   .navbar .brand { color: #FF0066; font-size: 17px; font-weight: bold; }
-  .navbar .spacer { flex: 1; }
   .navbar .brand-by { color: #FFD700; font-size: 13px; font-weight: normal; margin-left: 8px; }
+  .navbar .spacer { flex: 1; }
   .navbar .reset-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; }
   .navbar .reset-link:hover { text-decoration: underline; }
 
   .main { padding: 16px; margin-top: 55px; max-width: 1400px; margin-left: auto; margin-right: auto; }
-
-  /* ===== Heading ===== */
-  .heading-box { text-align: center; margin-bottom: 14px; }
-  .heading-input {
-    font-size: 22px; font-weight: bold; text-align: center; color: #000;
-    border: 1px dashed #bbbbbb; background: transparent; border-radius: 4px;
-    width: 100%; max-width: 900px; padding: 6px;
-  }
-  .heading-input:focus { outline: none; border-color: #005959; background: #fff; }
 
   /* ===== Cards ===== */
   .top-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
@@ -57,22 +48,32 @@
   }
   input:focus, select:focus { outline: none; border-color: #005959; }
 
+  /* ===== Semester block ===== */
+  .semester-block { margin-bottom: 28px; }
+  .heading-box { text-align: center; margin-bottom: 10px; }
+  .heading-input {
+    font-size: 22px; font-weight: bold; text-align: center; color: #000;
+    border: 1px dashed #bbbbbb; background: transparent; border-radius: 4px;
+    width: 100%; max-width: 900px; padding: 6px;
+  }
+  .heading-input:focus { outline: none; border-color: #005959; background: #fff; }
+
   /* ===== Grade table ===== */
   .table-note { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: #0066FF; margin-bottom: 8px; }
   .table-note .maxcredit-ctl { color: #333333; }
   .table-note .maxcredit-ctl input { width: 74px; height: 26px; font-size: 14px; text-align: center; margin: 0; }
   .table-wrap { overflow-x: auto; margin-bottom: 16px; }
-  table#gradeTable {
+  table.gradeTable {
     border-collapse: collapse; width: 100%;
     background-color: #D9ECEC; color: #333333;
     border: 1px dashed #005959; font-size: 13px;
   }
-  table#gradeTable th, table#gradeTable td {
+  table.gradeTable th, table.gradeTable td {
     border: 1px solid #005959; padding: 4px; text-align: center; vertical-align: middle;
   }
-  table#gradeTable thead th { background-color: #D9ECEC; color: #333333; font-weight: bold; font-size: 13px; }
-  table#gradeTable tbody tr:hover { background-color: #A1DCF2; }
-  table#gradeTable input, table#gradeTable select {
+  table.gradeTable thead th { background-color: #D9ECEC; color: #333333; font-weight: bold; font-size: 13px; }
+  table.gradeTable tbody tr:hover { background-color: #A1DCF2; }
+  table.gradeTable input, table.gradeTable select {
     width: 100%; min-width: 62px; height: 28px; font-size: 13px; margin: 0; text-align: center;
   }
   .name-cell input { text-align: left; min-width: 160px; }
@@ -96,7 +97,7 @@
   .credit-cell select { min-width: 70px; }
 
   /* ===== Summary ===== */
-  .summary-wrap { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .summary-wrap { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
   .summary-box { background: #FCFCFC; border: 1px solid #dddddd; border-radius: 4px; flex: 1 1 300px; overflow: hidden; }
   .summary-table { width: 100%; border-collapse: collapse; }
   .summary-table td { padding: 9px 16px; font-size: 15px; border-bottom: 1px solid #eeeeee; }
@@ -138,10 +139,6 @@
 
   <div class="main">
 
-    <div class="heading-box">
-      <input id="headingInput" class="heading-input" type="text" value="">
-    </div>
-
     <div class="top-row">
       <div class="card">
         <h2>ข้อมูลนักเรียน</h2>
@@ -158,39 +155,7 @@
       </div>
     </div>
 
-    <div class="table-note">
-      <span>ช่อง "คะแนนรวมหน่วย" กดปุ่ม + เพื่อเพิ่มช่องย่อย (กด × เพื่อลบ) ผลรวมไม่เกิน 50</span>
-      <span class="maxcredit-ctl">หน่วยกิตรวมสูงสุด: <input id="maxCreditInput" type="number" min="0" step="0.5" value="16"></span>
-    </div>
-
-    <div class="table-wrap">
-      <table id="gradeTable">
-        <thead>
-          <tr>
-            <th>รหัสวิชา</th>
-            <th>รายวิชา</th>
-            <th>หน่วยกิต</th>
-            <th>คะแนนรวมหน่วย</th>
-            <th>กลางภาค</th>
-            <th>ปลายภาค</th>
-            <th>รวมคะแนน</th>
-            <th>ระดับคะแนน</th>
-            <th>ครูผู้สอน</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-
-    <div class="summary-wrap">
-      <div class="summary-box">
-        <h2>สรุปผลการเรียน</h2>
-        <table class="summary-table">
-          <tr><td>รวมจำนวนหน่วยกิตที่เรียน</td><td><span id="totalCredits">0.0</span></td></tr>
-          <tr><td>ผลการเรียนเฉลี่ย GPA</td><td><span id="gpaValue">0.00</span></td></tr>
-        </table>
-      </div>
-    </div>
+    <div id="semesters"></div>
 
     <div class="gpax-box">
       <h2>คำนวณ GPAX 5 เทอม</h2>
@@ -229,30 +194,47 @@
   ];
 
   var CREDIT_OPTIONS = [0, 0.5, 1, 1.5, 2];
-  var TERMS = ["ม.4/1", "ม.4/2", "ม.5/1", "ม.5/2", "ม.6/1"];
+  var TERMS = ["ม.4 เทอม 1", "ม.4 เทอม 2", "ม.5 เทอม 1", "ม.5 เทอม 2", "ม.6 เทอม 1"];
+  var SEMESTER_HEADINGS = [
+    "เว็บคำนวณเกรด",
+    "ผลการเรียนชั้นมัธยมศึกษาปีที่ 4 ภาคเรียนที่ 2",
+    "ผลการเรียนชั้นมัธยมศึกษาปีที่ 5 ภาคเรียนที่ 1",
+    "ผลการเรียนชั้นมัธยมศึกษาปีที่ 5 ภาคเรียนที่ 2",
+    "ผลการเรียนชั้นมัธยมศึกษาปีที่ 6 ภาคเรียนที่ 1"
+  ];
   var MAX_COLLECT = 50;
   var MAX_MID = 20;
   var MAX_FINAL = 30;
-  var STORAGE_KEY = "gpaCalcState_v1";
-  var DEFAULT_HEADING = "ผลการเรียนชั้นมัธยมศึกษาปีที่ 4 ภาคเรียนที่ 1";
+  var NUM_SEMESTERS = 5;
+  var STORAGE_KEY = "gpaCalcState_v2";
+
+  function makeRows(useCredits) {
+    return SUBJECTS.map(function (s) {
+      return {
+        code: s.code,
+        name: s.name,
+        credit: useCredits ? s.credit : 0,
+        collects: [0],
+        mid: 0,
+        final: 0,
+        teacher: "",
+        activityGrade: "ผ"
+      };
+    });
+  }
 
   function defaultState() {
+    var semesters = [];
+    for (var s = 0; s < NUM_SEMESTERS; s++) {
+      semesters.push({
+        heading: SEMESTER_HEADINGS[s],
+        maxCredit: 16,
+        rows: makeRows(s === 0)
+      });
+    }
     return {
-      heading: DEFAULT_HEADING,
-      maxCredit: 16,
       student: { name: "", id: "", room: "", no: "" },
-      rows: SUBJECTS.map(function (s) {
-        return {
-          code: s.code,
-          name: s.name,
-          credit: s.credit,
-          collects: [0],
-          mid: 0,
-          final: 0,
-          teacher: "",
-          activityGrade: "ผ"
-        };
-      }),
+      semesters: semesters,
       gpax: ["", "", "", "", ""]
     };
   }
@@ -262,11 +244,15 @@
       var raw = localStorage.getItem(STORAGE_KEY);
       if (!raw) return defaultState();
       var s = JSON.parse(raw);
-      if (!s || !s.rows || s.rows.length !== SUBJECTS.length) return defaultState();
+      if (!s || !s.semesters || s.semesters.length !== NUM_SEMESTERS) return defaultState();
+      for (var i = 0; i < s.semesters.length; i++) {
+        var sem = s.semesters[i];
+        if (!sem || !sem.rows || sem.rows.length !== SUBJECTS.length) return defaultState();
+        if (typeof sem.heading !== "string") sem.heading = SEMESTER_HEADINGS[i];
+        if (typeof sem.maxCredit !== "number" || isNaN(sem.maxCredit) || sem.maxCredit < 0) sem.maxCredit = 16;
+      }
       if (!s.student) s.student = { name: "", id: "", room: "", no: "" };
       if (!s.gpax || s.gpax.length !== 5) s.gpax = ["", "", "", "", ""];
-      if (typeof s.heading !== "string") s.heading = DEFAULT_HEADING;
-      if (typeof s.maxCredit !== "number" || isNaN(s.maxCredit) || s.maxCredit < 0) s.maxCredit = 16;
       return s;
     } catch (e) {
       return defaultState();
@@ -309,13 +295,13 @@
   }
   function fmtGrade(g) { return Number.isInteger(g) ? String(g) : g.toFixed(1); }
 
-  function currentCreditTotal() {
-    return state.rows.reduce(function (a, r) { return a + num(r.credit); }, 0);
+  function semesterCreditTotal(s) {
+    return state.semesters[s].rows.reduce(function (a, r) { return a + num(r.credit); }, 0);
   }
 
-  function computeSummary() {
+  function computeSemesterSummary(s) {
     var sumC = 0, sumGC = 0;
-    state.rows.forEach(function (r) {
+    state.semesters[s].rows.forEach(function (r) {
       var c = num(r.credit);
       if (c > 0) {
         var g = gradeFromScore(totalScore(r));
@@ -328,10 +314,10 @@
     return { credits: sumC, gpa: gpa };
   }
 
-  function updateSummary() {
-    var s = computeSummary();
-    document.getElementById("totalCredits").textContent = s.credits.toFixed(1);
-    document.getElementById("gpaValue").textContent = s.gpa.toFixed(2);
+  function updateSemesterSummary(s) {
+    var sum = computeSemesterSummary(s);
+    document.getElementById("totalCredits-" + s).textContent = sum.credits.toFixed(1);
+    document.getElementById("gpaValue-" + s).textContent = sum.gpa.toFixed(2);
   }
 
   function updateGPAX() {
@@ -351,31 +337,104 @@
   }
 
   function updateAll() {
-    updateSummary();
+    for (var s = 0; s < state.semesters.length; s++) updateSemesterSummary(s);
     updateGPAX();
     saveState();
   }
 
-  /* ===== Table ===== */
-  function makeInput(type, cls, i) {
+  /* ===== Build ===== */
+  function makeInput(type, cls, s, i) {
     var inp = document.createElement("input");
     inp.type = type;
     inp.className = cls;
+    inp.setAttribute("data-sem", s);
     inp.setAttribute("data-row", i);
     inp.autocomplete = "off";
     return inp;
   }
 
-  function buildTable() {
-    var tbody = document.querySelector("#gradeTable tbody");
-    tbody.innerHTML = "";
+  function buildSemesters() {
+    var container = document.getElementById("semesters");
+    container.innerHTML = "";
 
-    state.rows.forEach(function (row, i) {
+    state.semesters.forEach(function (sem, s) {
+      var block = document.createElement("div");
+      block.className = "semester-block";
+
+      // heading
+      var headingBox = document.createElement("div");
+      headingBox.className = "heading-box";
+      var heading = document.createElement("input");
+      heading.type = "text";
+      heading.className = "heading-input";
+      heading.id = "heading-" + s;
+      heading.value = sem.heading;
+      heading.addEventListener("input", function () { sem.heading = heading.value; saveState(); });
+      headingBox.appendChild(heading);
+
+      // note + cap
+      var note = document.createElement("div");
+      note.className = "table-note";
+      var noteText = document.createElement("span");
+      noteText.textContent = 'ช่อง "คะแนนรวมหน่วย" กดปุ่ม + เพื่อเพิ่มช่องย่อย (กด × เพื่อลบ) ผลรวมไม่เกิน 50';
+      var capCtl = document.createElement("span");
+      capCtl.className = "maxcredit-ctl";
+      capCtl.appendChild(document.createTextNode("หน่วยกิตรวมสูงสุด: "));
+      var cap = document.createElement("input");
+      cap.type = "number"; cap.min = "0"; cap.step = "0.5";
+      cap.id = "maxCredit-" + s;
+      cap.value = sem.maxCredit;
+      cap.addEventListener("input", function () {
+        var v = parseFloat(cap.value);
+        if (isNaN(v) || v < 0) return;
+        sem.maxCredit = v;
+        saveState();
+      });
+      cap.addEventListener("blur", function () { cap.value = sem.maxCredit; });
+      capCtl.appendChild(cap);
+      note.appendChild(noteText);
+      note.appendChild(capCtl);
+
+      // table
+      var tableWrap = document.createElement("div");
+      tableWrap.className = "table-wrap";
+      var table = document.createElement("table");
+      table.className = "gradeTable";
+      table.id = "gradeTable-" + s;
+      table.innerHTML = "<thead><tr>" +
+        "<th>รหัสวิชา</th><th>รายวิชา</th><th>หน่วยกิต</th><th>คะแนนรวมหน่วย</th>" +
+        "<th>กลางภาค</th><th>ปลายภาค</th><th>รวมคะแนน</th><th>ระดับคะแนน</th><th>ครูผู้สอน</th>" +
+        "</tr></thead><tbody></tbody>";
+      tableWrap.appendChild(table);
+
+      // summary
+      var summaryWrap = document.createElement("div");
+      summaryWrap.className = "summary-wrap";
+      summaryWrap.innerHTML =
+        '<div class="summary-box"><h2>สรุปผลการเรียน</h2>' +
+        '<table class="summary-table">' +
+        '<tr><td>รวมจำนวนหน่วยกิตที่เรียน</td><td><span id="totalCredits-' + s + '">0.0</span></td></tr>' +
+        '<tr><td>ผลการเรียนเฉลี่ย GPA</td><td><span id="gpaValue-' + s + '">0.00</span></td></tr>' +
+        '</table></div>';
+
+      block.appendChild(headingBox);
+      block.appendChild(note);
+      block.appendChild(tableWrap);
+      block.appendChild(summaryWrap);
+      container.appendChild(block);
+
+      buildRows(s, table.querySelector("tbody"), sem.rows);
+    });
+  }
+
+  function buildRows(s, tbody, rows) {
+    tbody.innerHTML = "";
+    rows.forEach(function (row, i) {
       var tr = document.createElement("tr");
 
       // 1. code
       var tdCode = document.createElement("td");
-      var code = makeInput("text", "code-input", i);
+      var code = makeInput("text", "code-input", s, i);
       code.value = row.code;
       code.addEventListener("input", function () { row.code = code.value; saveState(); });
       tdCode.appendChild(code);
@@ -383,7 +442,7 @@
       // 2. name
       var tdName = document.createElement("td");
       tdName.className = "name-cell";
-      var name = makeInput("text", "name-input", i);
+      var name = makeInput("text", "name-input", s, i);
       name.value = row.name;
       name.addEventListener("input", function () { row.name = name.value; saveState(); });
       tdName.appendChild(name);
@@ -402,15 +461,16 @@
       sel.addEventListener("change", function () {
         var newVal = parseFloat(sel.value);
         var old = num(row.credit);
-        var total = currentCreditTotal() - old + newVal;
-        if (newVal > old && total > state.maxCredit) {
+        var total = semesterCreditTotal(s) - old + newVal;
+        if (newVal > old && total > state.semesters[s].maxCredit) {
           sel.value = String(old);
-          toast("รวมหน่วยกิตต้องไม่เกิน " + state.maxCredit + " (ปัจจุบัน " + currentCreditTotal().toFixed(1) + ")");
+          toast("รวมหน่วยกิตต้องไม่เกิน " + state.semesters[s].maxCredit + " (ปัจจุบัน " + semesterCreditTotal(s).toFixed(1) + ")");
           return;
         }
         row.credit = newVal;
-        renderGradeCell(i);
-        updateAll();
+        renderGradeCell(s, i);
+        updateSemesterSummary(s);
+        saveState();
       });
       tdCredit.appendChild(sel);
 
@@ -421,16 +481,16 @@
       collectCell.className = "collect-cell";
       var items = document.createElement("div");
       items.className = "collect-items";
-      items.id = "collect-items-" + i;
+      items.id = "collect-items-" + s + "-" + i;
       var addBtn = document.createElement("button");
       addBtn.type = "button";
       addBtn.className = "btn-add";
       addBtn.textContent = "+";
       addBtn.title = "เพิ่มช่องคะแนน";
-      addBtn.addEventListener("click", function () { addCollect(i); });
+      addBtn.addEventListener("click", function () { addCollect(s, i); });
       var sumSpan = document.createElement("span");
       sumSpan.className = "collect-sum";
-      sumSpan.id = "collect-sum-" + i;
+      sumSpan.id = "collect-sum-" + s + "-" + i;
       collectCell.appendChild(items);
       collectCell.appendChild(addBtn);
       collectCell.appendChild(sumSpan);
@@ -438,35 +498,35 @@
 
       // 5. midterm
       var tdMid = document.createElement("td");
-      var mid = makeInput("number", "mid-input", i);
+      var mid = makeInput("number", "mid-input", s, i);
       mid.min = "0"; mid.max = String(MAX_MID);
       mid.value = num(row.mid);
-      mid.addEventListener("input", function () { onScoreInput(mid, i, "mid", MAX_MID); });
+      mid.addEventListener("input", function () { onScoreInput(mid, s, i, "mid", MAX_MID); });
       tdMid.appendChild(mid);
 
       // 6. final
       var tdFinal = document.createElement("td");
-      var fin = makeInput("number", "final-input", i);
+      var fin = makeInput("number", "final-input", s, i);
       fin.min = "0"; fin.max = String(MAX_FINAL);
       fin.value = num(row.final);
-      fin.addEventListener("input", function () { onScoreInput(fin, i, "final", MAX_FINAL); });
+      fin.addEventListener("input", function () { onScoreInput(fin, s, i, "final", MAX_FINAL); });
       tdFinal.appendChild(fin);
 
       // 7. total (auto)
       var tdTotal = document.createElement("td");
       var totalSpan = document.createElement("span");
       totalSpan.className = "row-total";
-      totalSpan.id = "row-total-" + i;
+      totalSpan.id = "row-total-" + s + "-" + i;
       tdTotal.appendChild(totalSpan);
 
       // 8. grade (auto / select)
       var tdGrade = document.createElement("td");
       tdGrade.className = "grade-cell";
-      tdGrade.id = "grade-cell-" + i;
+      tdGrade.id = "grade-cell-" + s + "-" + i;
 
       // 9. teacher
       var tdTeacher = document.createElement("td");
-      var teacher = makeInput("text", "teacher-input", i);
+      var teacher = makeInput("text", "teacher-input", s, i);
       teacher.value = row.teacher;
       teacher.addEventListener("input", function () { row.teacher = teacher.value; saveState(); });
       tdTeacher.appendChild(teacher);
@@ -483,16 +543,15 @@
       tbody.appendChild(tr);
     });
 
-    // build dynamic parts
-    state.rows.forEach(function (row, i) {
-      renderCollect(i);
-      recalcRow(i);
+    rows.forEach(function (row, i) {
+      renderCollect(s, i);
+      recalcRow(s, i);
     });
   }
 
-  function renderCollect(i) {
-    var row = state.rows[i];
-    var cont = document.getElementById("collect-items-" + i);
+  function renderCollect(s, i) {
+    var row = state.semesters[s].rows[i];
+    var cont = document.getElementById("collect-items-" + s + "-" + i);
     cont.innerHTML = "";
     row.collects.forEach(function (v, j) {
       var pair = document.createElement("div");
@@ -503,10 +562,8 @@
       inp.min = "0";
       inp.max = String(MAX_COLLECT);
       inp.value = v;
-      inp.setAttribute("data-row", i);
-      inp.setAttribute("data-idx", j);
       inp.autocomplete = "off";
-      inp.addEventListener("input", function () { onCollectInput(inp, i, j); });
+      inp.addEventListener("input", function () { onCollectInput(inp, s, i, j); });
       pair.appendChild(inp);
       if (row.collects.length > 1) {
         var del = document.createElement("button");
@@ -514,31 +571,31 @@
         del.className = "btn-del";
         del.textContent = "\u00D7";
         del.title = "ลบช่องนี้";
-        del.addEventListener("click", function () { removeCollect(i, j); });
+        del.addEventListener("click", function () { removeCollect(s, i, j); });
         pair.appendChild(del);
       }
       cont.appendChild(pair);
     });
-    document.getElementById("collect-sum-" + i).textContent = collectSum(row);
+    document.getElementById("collect-sum-" + s + "-" + i).textContent = collectSum(row);
   }
 
-  function addCollect(i) {
-    state.rows[i].collects.push("");
-    renderCollect(i);
-    recalcRow(i);
+  function addCollect(s, i) {
+    state.semesters[s].rows[i].collects.push("");
+    renderCollect(s, i);
+    recalcRow(s, i);
     saveState();
   }
 
-  function removeCollect(i, j) {
-    if (state.rows[i].collects.length <= 1) return;
-    state.rows[i].collects.splice(j, 1);
-    renderCollect(i);
-    recalcRow(i);
+  function removeCollect(s, i, j) {
+    if (state.semesters[s].rows[i].collects.length <= 1) return;
+    state.semesters[s].rows[i].collects.splice(j, 1);
+    renderCollect(s, i);
+    recalcRow(s, i);
     updateAll();
   }
 
-  function onCollectInput(inp, i, j) {
-    var row = state.rows[i];
+  function onCollectInput(inp, s, i, j) {
+    var row = state.semesters[s].rows[i];
     var raw = inp.value;
     if (raw === "") {
       row.collects[j] = "";
@@ -558,13 +615,13 @@
         row.collects[j] = String(val);
       }
     }
-    document.getElementById("collect-sum-" + i).textContent = collectSum(row);
-    recalcRow(i);
+    document.getElementById("collect-sum-" + s + "-" + i).textContent = collectSum(row);
+    recalcRow(s, i);
     updateAll();
   }
 
-  function onScoreInput(inp, i, key, max) {
-    var row = state.rows[i];
+  function onScoreInput(inp, s, i, key, max) {
+    var row = state.semesters[s].rows[i];
     if (inp.value === "") {
       row[key] = "";
     } else {
@@ -576,13 +633,13 @@
         row[key] = v;
       }
     }
-    recalcRow(i);
+    recalcRow(s, i);
     updateAll();
   }
 
-  function renderGradeCell(i) {
-    var row = state.rows[i];
-    var td = document.getElementById("grade-cell-" + i);
+  function renderGradeCell(s, i) {
+    var row = state.semesters[s].rows[i];
+    var td = document.getElementById("grade-cell-" + s + "-" + i);
     td.innerHTML = "";
     if (num(row.credit) > 0) {
       var span = document.createElement("span");
@@ -603,11 +660,11 @@
     }
   }
 
-  function recalcRow(i) {
-    var row = state.rows[i];
-    document.getElementById("row-total-" + i).textContent = totalScore(row);
-    renderGradeCell(i);
-    updateSummary();
+  function recalcRow(s, i) {
+    var row = state.semesters[s].rows[i];
+    document.getElementById("row-total-" + s + "-" + i).textContent = totalScore(row);
+    renderGradeCell(s, i);
+    updateSemesterSummary(s);
   }
 
   /* ===== GPAX ===== */
@@ -657,31 +714,12 @@
   }
 
   function init() {
-    var heading = document.getElementById("headingInput");
-    heading.value = state.heading;
-    heading.addEventListener("input", function () {
-      state.heading = heading.value;
-      saveState();
-    });
-
     bindStudent("fName", "name");
     bindStudent("fId", "id");
     bindStudent("fRoom", "room");
     bindStudent("fNo", "no");
 
-    var maxCreditInput = document.getElementById("maxCreditInput");
-    maxCreditInput.value = state.maxCredit;
-    maxCreditInput.addEventListener("input", function () {
-      var v = parseFloat(maxCreditInput.value);
-      if (isNaN(v) || v < 0) return;
-      state.maxCredit = v;
-      saveState();
-    });
-    maxCreditInput.addEventListener("blur", function () {
-      maxCreditInput.value = state.maxCredit;
-    });
-
-    buildTable();
+    buildSemesters();
     buildGPAX();
     updateAll();
 
