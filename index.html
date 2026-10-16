@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GPA Calculator - ระบบคำนวณเกรด</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    background-color: #EFEFEF;
+    font-family: Arial, "Tahoma", sans-serif;
+    font-size: 10pt;
+    color: #333333;
+  }
+
+  /* ===== Navbar ===== */
+  .navbar {
+    position: fixed; top: 0; left: 0; width: 100%; height: 55px;
+    background-color: #333; display: flex; align-items: center;
+    padding: 0 16px; z-index: 1000;
+  }
+  .navbar .logo { height: 42px; width: 42px; border-radius: 6px; margin-right: 12px; object-fit: cover; }
+  .navbar .brand { color: #FF0066; font-size: 17px; font-weight: bold; }
+  .navbar .spacer { flex: 1; }
+  .navbar .reset-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; }
+  .navbar .reset-link:hover { text-decoration: underline; }
+
+  .main { padding: 16px; margin-top: 55px; max-width: 1400px; margin-left: auto; margin-right: auto; }
+
+  /* ===== Heading ===== */
+  .heading-box { text-align: center; margin-bottom: 14px; }
+  .heading-input {
+    font-size: 22px; font-weight: bold; text-align: center; color: #000;
+    border: 1px dashed #bbbbbb; background: transparent; border-radius: 4px;
+    width: 100%; max-width: 900px; padding: 6px;
+  }
+  .heading-input:focus { outline: none; border-color: #005959; background: #fff; }
+
+  /* ===== Cards ===== */
+  .top-row { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .card { background-color: #FCFCFC; border: 1px solid #dddddd; border-radius: 4px; flex: 1 1 340px; overflow: hidden; }
+  .card h2, .summary-box h2, .gpax-box h2 {
+    background-color: #666666; color: #FFFFFF; margin: 0;
+    text-align: center; font-size: 16px; padding: 7px 4px; font-weight: bold; height: 32px;
+  }
+  .stud-img-wrap { text-align: center; padding: 16px; }
+  .stud-img { height: 200px; width: 200px; border-radius: 50%; object-fit: cover; background: #eee; }
+  .form-row { display: flex; align-items: center; padding: 5px 16px; }
+  .form-row label { width: 110px; color: #3e3c3c; font-size: 15px; }
+  .form-row input { flex: 1; }
+
+  input[type=text], input[type=number], select {
+    font-size: 15px; color: #000; height: 30px; padding: 3px 8px; margin: 4px 0;
+    border: 1px solid #bbbbbb; border-radius: 3px; background: #fff;
+  }
+  input:focus, select:focus { outline: none; border-color: #005959; }
+
+  /* ===== Grade table ===== */
+  .table-note { font-size: 13px; color: #0066FF; margin-bottom: 8px; }
+  .table-wrap { overflow-x: auto; margin-bottom: 16px; }
+  table#gradeTable {
+    border-collapse: collapse; width: 100%;
+    background-color: #D9ECEC; color: #333333;
+    border: 1px dashed #005959; font-size: 13px;
+  }
+  table#gradeTable th, table#gradeTable td {
+    border: 1px solid #005959; padding: 4px; text-align: center; vertical-align: middle;
+  }
+  table#gradeTable thead th { background-color: #D9ECEC; color: #333333; font-weight: bold; font-size: 13px; }
+  table#gradeTable tbody tr:hover { background-color: #A1DCF2; }
+  table#gradeTable input, table#gradeTable select {
+    width: 100%; min-width: 62px; height: 28px; font-size: 13px; margin: 0; text-align: center;
+  }
+  .name-cell input { text-align: left; min-width: 160px; }
+  .collect-cell { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .collect-items { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .collect-input { width: 48px !important; min-width: 48px !important; }
+  .btn-add {
+    background-color: #5cb85c; color: #fff; border: none; border-radius: 3px;
+    width: 24px; height: 24px; font-size: 16px; line-height: 1; cursor: pointer; flex: none;
+  }
+  .btn-add:hover { background-color: #449d44; }
+  .collect-sum { font-weight: bold; min-width: 26px; }
+  .row-total { font-weight: bold; }
+  .grade-auto { font-weight: bold; font-size: 15px; }
+  .credit-cell select { min-width: 70px; }
+
+  /* ===== Summary ===== */
+  .summary-wrap { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+  .summary-box { background: #FCFCFC; border: 1px solid #dddddd; border-radius: 4px; flex: 1 1 300px; overflow: hidden; }
+  .summary-table { width: 100%; border-collapse: collapse; }
+  .summary-table td { padding: 9px 16px; font-size: 15px; border-bottom: 1px solid #eeeeee; }
+  .summary-table td:first-child { text-align: left; color: #333; }
+  .summary-table td:last-child { text-align: left; font-weight: bold; color: #005959; font-size: 16px; }
+
+  /* ===== GPAX ===== */
+  .gpax-box { background: #FCFCFC; border: 1px solid #dddddd; border-radius: 4px; overflow: hidden; margin-bottom: 24px; }
+  .gpax-inputs { display: flex; gap: 18px; justify-content: center; padding: 18px; flex-wrap: wrap; }
+  .gpax-item { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+  .gpax-input { width: 74px !important; text-align: center; font-size: 18px !important; height: 44px !important; margin: 0 !important; }
+  .gpax-label { font-size: 13px; color: #666666; }
+  .gpax-result { text-align: center; padding: 0 18px 16px; font-size: 20px; font-weight: bold; color: #005959; }
+  .gpax-result .waiting { color: #989797; font-weight: normal; font-size: 15px; }
+
+  /* ===== Toast ===== */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+    background: #d9534f; color: #fff; padding: 10px 18px; border-radius: 4px;
+    font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .3s;
+    z-index: 2000; max-width: 90%; text-align: center;
+  }
+  .toast.show { opacity: 1; }
+
+  @media (max-width: 600px) {
+    .form-row label { width: 90px; font-size: 14px; }
+    .heading-input { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+  <div class="navbar">
+    <img class="logo" src="assets_1/img/weschoollogo.png" alt="logo">
+    <span class="brand">GPA Calculator System</span>
+    <span class="spacer"></span>
+    <span class="reset-link" id="resetBtn">รีเซ็ตข้อมูล</span>
+  </div>
+
+  <div class="main">
+
+    <div class="heading-box">
+      <input id="headingInput" class="heading-input" type="text" value="">
+    </div>
+
+    <div class="top-row">
+      <div class="card">
+        <h2>ข้อมูลนักเรียน</h2>
+        <div class="stud-img-wrap">
+          <img class="stud-img" src="assets_1/img/weschoollogo.png" alt="student">
+        </div>
+      </div>
+      <div class="card">
+        <h2>ข้อมูล</h2>
+        <div class="form-row"><label for="fName">ชื่อ-สกุล</label><input id="fName" type="text" autocomplete="off"></div>
+        <div class="form-row"><label for="fId">เลขประจำตัว</label><input id="fId" type="text" autocomplete="off"></div>
+        <div class="form-row"><label for="fRoom">ห้อง</label><input id="fRoom" type="text" autocomplete="off"></div>
+        <div class="form-row"><label for="fNo">เลขที่</label><input id="fNo" type="text" autocomplete="off"></div>
+      </div>
+    </div>
+
+    <div class="table-note">
+      ช่อง "คะแนนรวมหน่วย" กดปุ่ม + เพื่อเพิ่มช่องย่อยได้ไม่จำกัด (ผลรวมไม่เกิน 50)
+    </div>
+
+    <div class="table-wrap">
+      <table id="gradeTable">
+        <thead>
+          <tr>
+            <th>รหัสวิชา</th>
+            <th>รายวิชา</th>
+            <th>หน่วยกิต</th>
+            <th>คะแนนรวมหน่วย</th>
+            <th>กลางภาค</th>
+            <th>ปลายภาค</th>
+            <th>รวมคะแนน</th>
+            <th>ระดับคะแนน</th>
+            <th>ครูผู้สอน</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+
+    <div class="summary-wrap">
+      <div class="summary-box">
+        <h2>สรุปผลการเรียน</h2>
+        <table class="summary-table">
+          <tr><td>รวมจำนวนหน่วยกิตที่เรียน</td><td><span id="totalCredits">0.0</span></td></tr>
+          <tr><td>ผลการเรียนเฉลี่ย GPA</td><td><span id="gpaValue">0.00</span></td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="gpax-box">
+      <h2>คำนวณ GPAX 5 เทอม</h2>
+      <div class="gpax-inputs" id="gpaxInputs"></div>
+      <div class="gpax-result" id="gpaxResult">GPAX: <span id="gpaxValue" class="waiting">รอข้อมูลให้ครบ 5 เทอม</span></div>
+    </div>
+
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+<script>
+(function () {
+  "use strict";
+
+  var SUBJECTS = [
+    { code: "ท31101", name: "ภาษาไทย 1", credit: 1.0 },
+    { code: "ค31107", name: "คณิตศาสตร์พื้นฐาน 1", credit: 1.0 },
+    { code: "ว31151", name: "วิทยาศาสตร์ชีวภาพ (ชีววิทยาพื้นฐาน)", credit: 1.5 },
+    { code: "ว31182", name: "การออกแบบและเทคโนโลยี", credit: 1.0 },
+    { code: "ว30131", name: "วิทยาศาสตร์กายภาพ 1 (เคมีพื้นฐาน)", credit: 1.5 },
+    { code: "ว30111", name: "วิทยาศาสตร์กายภาพ (ฟิสิกส์พื้นฐาน)", credit: 1.5 },
+    { code: "ส31101", name: "สังคมศึกษา 1", credit: 1.0 },
+    { code: "ส31102", name: "ประวัติศาสตร์ 1", credit: 0.5 },
+    { code: "พ31101", name: "สุขศึกษาและพลศึกษา 1", credit: 0.5 },
+    { code: "ศ31101", name: "ศิลปะ 1(ทัศนศิลป์)", credit: 0.5 },
+    { code: "อ31101", name: "ภาษาอังกฤษ 1", credit: 1.0 },
+    { code: "ค31241", name: "คณิตศาสตร์เพิ่มเติม 1", credit: 2.0 },
+    { code: "ส30231", name: "หน้าที่พลเมือง 1(บูรณาการ)", credit: 0.5 },
+    { code: "พ30243", name: "ว่ายน้ำ", credit: 0.5 },
+    { code: "ต31201", name: "ภาษาพม่าเพื่อการสื่อสาร 1", credit: 1.0 },
+    { code: "อ31236", name: "ภาษาอังกฤษเพื่อการสื่อสาร 1", credit: 1.0 },
+    { code: "ก31911", name: "ชุมนุมพัฒนาผู้เรียน 1", credit: 0.0 },
+    { code: "ก31909", name: "แนะแนว 1", credit: 0.0 },
+    { code: "ก31919", name: "คุณธรรม จริยธรรม 1", credit: 0.0 }
+  ];
+
+  var CREDIT_OPTIONS = [0, 0.5, 1, 1.5, 2];
+  var TERMS = ["ม.4/1", "ม.4/2", "ม.5/1", "ม.5/2", "ม.6/1"];
+  var MAX_TOTAL_CREDIT = 16;
+  var MAX_COLLECT = 50;
+  var MAX_MID = 20;
+  var MAX_FINAL = 30;
+  var STORAGE_KEY = "gpaCalcState_v1";
+  var DEFAULT_HEADING = "ผลการเรียนชั้นมัธยมศึกษาปีที่ 4 ภาคเรียนที่ 1";
+
+  function defaultState() {
+    return {
+      heading: DEFAULT_HEADING,
+      student: { name: "", id: "", room: "", no: "" },
+      rows: SUBJECTS.map(function (s) {
+        return {
+          code: s.code,
+          name: s.name,
+          credit: s.credit,
+          collects: [0],
+          mid: 0,
+          final: 0,
+          teacher: "",
+          activityGrade: "ผ"
+        };
+      }),
+      gpax: ["", "", "", "", ""]
+    };
+  }
+
+  function loadState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return defaultState();
+      var s = JSON.parse(raw);
+      if (!s || !s.rows || s.rows.length !== SUBJECTS.length) return defaultState();
+      if (!s.student) s.student = { name: "", id: "", room: "", no: "" };
+      if (!s.gpax || s.gpax.length !== 5) s.gpax = ["", "", "", "", ""];
+      if (typeof s.heading !== "string") s.heading = DEFAULT_HEADING;
+      return s;
+    } catch (e) {
+      return defaultState();
+    }
+  }
+
+  var state = loadState();
+
+  function saveState() {
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch (e) {}
+  }
+
+  var toastTimer;
+  function toast(msg) {
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () { t.classList.remove("show"); }, 2600);
+  }
+
+  /* ===== Calculations ===== */
+  function num(v) { var n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+  function collectSum(row) {
+    return row.collects.reduce(function (a, b) { return a + num(b); }, 0);
+  }
+  function totalScore(row) {
+    return collectSum(row) + num(row.mid) + num(row.final);
+  }
+  function gradeFromScore(t) {
+    if (t >= 80) return 4;
+    if (t >= 75) return 3.5;
+    if (t >= 70) return 3;
+    if (t >= 65) return 2.5;
+    if (t >= 60) return 2;
+    if (t >= 55) return 1.5;
+    if (t >= 50) return 1;
+    return 0;
+  }
+  function fmtGrade(g) { return Number.isInteger(g) ? String(g) : g.toFixed(1); }
+
+  function currentCreditTotal() {
+    return state.rows.reduce(function (a, r) { return a + num(r.credit); }, 0);
+  }
+
+  function computeSummary() {
+    var sumC = 0, sumGC = 0;
+    state.rows.forEach(function (r) {
+      var c = num(r.credit);
+      if (c > 0) {
+        var g = gradeFromScore(totalScore(r));
+        sumC += c;
+        sumGC += g * c;
+      }
+    });
+    var gpa = sumC ? sumGC / sumC : 0;
+    gpa = Math.floor(gpa * 100) / 100; // ปัดลง 2 ตำแหน่ง
+    return { credits: sumC, gpa: gpa };
+  }
+
+  function updateSummary() {
+    var s = computeSummary();
+    document.getElementById("totalCredits").textContent = s.credits.toFixed(1);
+    document.getElementById("gpaValue").textContent = s.gpa.toFixed(2);
+  }
+
+  function updateGPAX() {
+    var el = document.getElementById("gpaxValue");
+    var complete = state.gpax.every(function (v) {
+      return String(v).trim() !== "" && !isNaN(parseFloat(v));
+    });
+    if (!complete) {
+      el.textContent = "รอข้อมูลให้ครบ 5 เทอม";
+      el.classList.add("waiting");
+      return;
+    }
+    var sum = state.gpax.reduce(function (a, b) { return a + parseFloat(b); }, 0);
+    var gpax = sum / 5;
+    el.textContent = gpax.toFixed(2);
+    el.classList.remove("waiting");
+  }
+
+  function updateAll() {
+    updateSummary();
+    updateGPAX();
+    saveState();
+  }
+
+  /* ===== Table ===== */
+  function makeInput(type, cls, i) {
+    var inp = document.createElement("input");
+    inp.type = type;
+    inp.className = cls;
+    inp.setAttribute("data-row", i);
+    inp.autocomplete = "off";
+    return inp;
+  }
+
+  function buildTable() {
+    var tbody = document.querySelector("#gradeTable tbody");
+    tbody.innerHTML = "";
+
+    state.rows.forEach(function (row, i) {
+      var tr = document.createElement("tr");
+
+      // 1. code
+      var tdCode = document.createElement("td");
+      var code = makeInput("text", "code-input", i);
+      code.value = row.code;
+      code.addEventListener("input", function () { row.code = code.value; saveState(); });
+      tdCode.appendChild(code);
+
+      // 2. name
+      var tdName = document.createElement("td");
+      tdName.className = "name-cell";
+      var name = makeInput("text", "name-input", i);
+      name.value = row.name;
+      name.addEventListener("input", function () { row.name = name.value; saveState(); });
+      tdName.appendChild(name);
+
+      // 3. credit select
+      var tdCredit = document.createElement("td");
+      tdCredit.className = "credit-cell";
+      var sel = document.createElement("select");
+      CREDIT_OPTIONS.forEach(function (c) {
+        var o = document.createElement("option");
+        o.value = String(c);
+        o.textContent = c.toFixed(1);
+        sel.appendChild(o);
+      });
+      sel.value = String(num(row.credit));
+      sel.addEventListener("change", function () {
+        var newVal = parseFloat(sel.value);
+        var old = num(row.credit);
+        var total = currentCreditTotal() - old + newVal;
+        if (total > MAX_TOTAL_CREDIT) {
+          sel.value = String(old);
+          toast("รวมหน่วยกิตต้องไม่เกิน 16 (ปัจจุบัน " + currentCreditTotal().toFixed(1) + ")");
+          return;
+        }
+        row.credit = newVal;
+        renderGradeCell(i);
+        updateAll();
+      });
+      tdCredit.appendChild(sel);
+
+      // 4. collect (sub-cells)
+      var tdCollect = document.createElement("td");
+      tdCollect.className = "collect-td";
+      var collectCell = document.createElement("div");
+      collectCell.className = "collect-cell";
+      var items = document.createElement("div");
+      items.className = "collect-items";
+      items.id = "collect-items-" + i;
+      var addBtn = document.createElement("button");
+      addBtn.type = "button";
+      addBtn.className = "btn-add";
+      addBtn.textContent = "+";
+      addBtn.title = "เพิ่มช่องคะแนน";
+      addBtn.addEventListener("click", function () { addCollect(i); });
+      var sumSpan = document.createElement("span");
+      sumSpan.className = "collect-sum";
+      sumSpan.id = "collect-sum-" + i;
+      collectCell.appendChild(items);
+      collectCell.appendChild(addBtn);
+      collectCell.appendChild(sumSpan);
+      tdCollect.appendChild(collectCell);
+
+      // 5. midterm
+      var tdMid = document.createElement("td");
+      var mid = makeInput("number", "mid-input", i);
+      mid.min = "0"; mid.max = String(MAX_MID);
+      mid.value = num(row.mid);
+      mid.addEventListener("input", function () { onScoreInput(mid, i, "mid", MAX_MID); });
+      tdMid.appendChild(mid);
+
+      // 6. final
+      var tdFinal = document.createElement("td");
+      var fin = makeInput("number", "final-input", i);
+      fin.min = "0"; fin.max = String(MAX_FINAL);
+      fin.value = num(row.final);
+      fin.addEventListener("input", function () { onScoreInput(fin, i, "final", MAX_FINAL); });
+      tdFinal.appendChild(fin);
+
+      // 7. total (auto)
+      var tdTotal = document.createElement("td");
+      var totalSpan = document.createElement("span");
+      totalSpan.className = "row-total";
+      totalSpan.id = "row-total-" + i;
+      tdTotal.appendChild(totalSpan);
+
+      // 8. grade (auto / select)
+      var tdGrade = document.createElement("td");
+      tdGrade.className = "grade-cell";
+      tdGrade.id = "grade-cell-" + i;
+
+      // 9. teacher
+      var tdTeacher = document.createElement("td");
+      var teacher = makeInput("text", "teacher-input", i);
+      teacher.value = row.teacher;
+      teacher.addEventListener("input", function () { row.teacher = teacher.value; saveState(); });
+      tdTeacher.appendChild(teacher);
+
+      tr.appendChild(tdCode);
+      tr.appendChild(tdName);
+      tr.appendChild(tdCredit);
+      tr.appendChild(tdCollect);
+      tr.appendChild(tdMid);
+      tr.appendChild(tdFinal);
+      tr.appendChild(tdTotal);
+      tr.appendChild(tdGrade);
+      tr.appendChild(tdTeacher);
+      tbody.appendChild(tr);
+    });
+
+    // build dynamic parts
+    state.rows.forEach(function (row, i) {
+      renderCollect(i);
+      recalcRow(i);
+    });
+  }
+
+  function renderCollect(i) {
+    var row = state.rows[i];
+    var cont = document.getElementById("collect-items-" + i);
+    cont.innerHTML = "";
+    row.collects.forEach(function (v, j) {
+      var inp = document.createElement("input");
+      inp.type = "number";
+      inp.className = "collect-input";
+      inp.min = "0";
+      inp.max = String(MAX_COLLECT);
+      inp.value = v;
+      inp.setAttribute("data-row", i);
+      inp.setAttribute("data-idx", j);
+      inp.autocomplete = "off";
+      inp.addEventListener("input", function () { onCollectInput(inp, i, j); });
+      cont.appendChild(inp);
+    });
+    document.getElementById("collect-sum-" + i).textContent = collectSum(row);
+  }
+
+  function addCollect(i) {
+    state.rows[i].collects.push("");
+    renderCollect(i);
+    saveState();
+  }
+
+  function onCollectInput(inp, i, j) {
+    var row = state.rows[i];
+    var raw = inp.value;
+    if (raw === "") {
+      row.collects[j] = "";
+    } else {
+      var val = parseFloat(raw);
+      if (isNaN(val)) { row.collects[j] = ""; }
+      else {
+        if (val < 0) { val = 0; inp.value = "0"; }
+        var others = row.collects.reduce(function (a, b, k) {
+          return k === j ? a : a + num(b);
+        }, 0);
+        if (others + val > MAX_COLLECT) {
+          inp.value = row.collects[j];
+          toast("คะแนนรวมหน่วยต้องไม่เกิน 50");
+          return;
+        }
+        row.collects[j] = String(val);
+      }
+    }
+    document.getElementById("collect-sum-" + i).textContent = collectSum(row);
+    recalcRow(i);
+    updateAll();
+  }
+
+  function onScoreInput(inp, i, key, max) {
+    var row = state.rows[i];
+    if (inp.value === "") {
+      row[key] = "";
+    } else {
+      var v = parseFloat(inp.value);
+      if (isNaN(v)) { row[key] = ""; }
+      else {
+        if (v < 0) { v = 0; inp.value = "0"; }
+        if (v > max) { v = max; inp.value = String(max); toast("ค่าสูงสุดคือ " + max); }
+        row[key] = v;
+      }
+    }
+    recalcRow(i);
+    updateAll();
+  }
+
+  function renderGradeCell(i) {
+    var row = state.rows[i];
+    var td = document.getElementById("grade-cell-" + i);
+    td.innerHTML = "";
+    if (num(row.credit) > 0) {
+      var span = document.createElement("span");
+      span.className = "grade-auto";
+      span.textContent = fmtGrade(gradeFromScore(totalScore(row)));
+      td.appendChild(span);
+    } else {
+      var sel = document.createElement("select");
+      ["ผ", "มผ"].forEach(function (v) {
+        var o = document.createElement("option");
+        o.value = v;
+        o.textContent = v;
+        sel.appendChild(o);
+      });
+      sel.value = row.activityGrade || "ผ";
+      sel.addEventListener("change", function () { row.activityGrade = sel.value; saveState(); });
+      td.appendChild(sel);
+    }
+  }
+
+  function recalcRow(i) {
+    var row = state.rows[i];
+    document.getElementById("row-total-" + i).textContent = totalScore(row);
+    renderGradeCell(i);
+    updateSummary();
+  }
+
+  /* ===== GPAX ===== */
+  function buildGPAX() {
+    var cont = document.getElementById("gpaxInputs");
+    cont.innerHTML = "";
+    state.gpax.forEach(function (v, idx) {
+      var wrap = document.createElement("div");
+      wrap.className = "gpax-item";
+      var inp = document.createElement("input");
+      inp.type = "number";
+      inp.step = "0.01";
+      inp.min = "0";
+      inp.max = "4";
+      inp.className = "gpax-input";
+      inp.value = v;
+      inp.placeholder = "-";
+      inp.autocomplete = "off";
+      var lab = document.createElement("div");
+      lab.className = "gpax-label";
+      lab.textContent = TERMS[idx];
+      inp.addEventListener("input", function () {
+        var raw = inp.value;
+        var n = parseFloat(raw);
+        if (raw !== "" && !isNaN(n)) {
+          if (n > 4) { n = 4; inp.value = "4"; }
+          else if (n < 0) { n = 0; inp.value = "0"; }
+        }
+        state.gpax[idx] = inp.value;
+        updateGPAX();
+        saveState();
+      });
+      wrap.appendChild(inp);
+      wrap.appendChild(lab);
+      cont.appendChild(wrap);
+    });
+  }
+
+  /* ===== Init ===== */
+  function bindStudent(id, key) {
+    var el = document.getElementById(id);
+    el.value = state.student[key] || "";
+    el.addEventListener("input", function () {
+      state.student[key] = el.value;
+      saveState();
+    });
+  }
+
+  function init() {
+    var heading = document.getElementById("headingInput");
+    heading.value = state.heading;
+    heading.addEventListener("input", function () {
+      state.heading = heading.value;
+      saveState();
+    });
+
+    bindStudent("fName", "name");
+    bindStudent("fId", "id");
+    bindStudent("fRoom", "room");
+    bindStudent("fNo", "no");
+
+    buildTable();
+    buildGPAX();
+    updateAll();
+
+    document.getElementById("resetBtn").addEventListener("click", function () {
+      if (confirm("ต้องการล้างข้อมูลทั้งหมดและกลับเป็นค่าเริ่มต้นหรือไม่?")) {
+        try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+        location.reload();
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", init);
+})();
+</script>
+</body>
+</html>
