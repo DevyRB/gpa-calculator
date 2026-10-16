@@ -26,7 +26,7 @@
   .navbar .spacer { flex: 1; }
   .navbar .reset-link { color: #FF3B30; cursor: pointer; font-size: 15px; font-weight: bold; user-select: none; }
   .navbar .reset-link:hover { text-decoration: underline; }
-  .navbar .nav-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; }
+  .navbar .nav-center { display: flex; align-items: center; gap: 18px; margin-left: 40px; }
   .navbar .help-link { color: #39FF14; font-weight: bold; cursor: pointer; font-size: 15px; user-select: none; }
   .navbar .help-link:hover { text-decoration: underline; }
   .navbar .ig-link { display: flex; align-items: center; }
@@ -148,7 +148,7 @@
     .navbar { height: auto; flex-wrap: wrap; padding: 8px 12px; row-gap: 6px; }
     .navbar .brand { flex: 1 1 auto; min-width: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .navbar .brand-by { display: none; }
-    .navbar .nav-center { position: static; transform: none; flex: 1 0 100%; justify-content: center; order: 3; gap: 14px; }
+    .navbar .nav-center { flex: 1 0 100%; justify-content: flex-start; order: 3; gap: 14px; margin-left: 0; padding-left: 28px; }
     .navbar .spacer { display: none; }
     .navbar .reset-link { order: 2; }
     .main { margin-top: 96px; }
@@ -161,8 +161,8 @@
     <img class="logo" src="assets_1/img/weschoollogo.png" alt="logo">
     <span class="brand">GPA Calculator System<span class="brand-by">By Sonny Warin</span></span>
     <div class="nav-center">
-      <span class="help-link" id="helpBtn">ช่วยเหลือ?</span>
       <a class="ig-link" href="https://www.instagram.com/sonnysiteup_/" target="_blank" rel="noopener" title="Instagram @sonnysiteup_"><img class="ig-icon" src="assets_1/img/instagram.png" alt="Instagram"></a>
+      <span class="help-link" id="helpBtn">ช่วยเหลือ?</span>
     </div>
     <span class="spacer"></span>
     <span class="reset-link" id="resetBtn">รีเซ็ตข้อมูล</span>
