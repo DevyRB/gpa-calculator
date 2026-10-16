@@ -23,6 +23,7 @@
   .navbar .logo { height: 42px; width: 42px; border-radius: 6px; margin-right: 12px; object-fit: cover; }
   .navbar .brand { color: #FF0066; font-size: 17px; font-weight: bold; }
   .navbar .spacer { flex: 1; }
+  .navbar .brand-by { color: #FFD700; font-size: 13px; font-weight: normal; margin-left: 8px; }
   .navbar .reset-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; }
   .navbar .reset-link:hover { text-decoration: underline; }
 
@@ -57,7 +58,9 @@
   input:focus, select:focus { outline: none; border-color: #005959; }
 
   /* ===== Grade table ===== */
-  .table-note { font-size: 13px; color: #0066FF; margin-bottom: 8px; }
+  .table-note { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 13px; color: #0066FF; margin-bottom: 8px; }
+  .table-note .maxcredit-ctl { color: #333333; }
+  .table-note .maxcredit-ctl input { width: 74px; height: 26px; font-size: 14px; text-align: center; margin: 0; }
   .table-wrap { overflow-x: auto; margin-bottom: 16px; }
   table#gradeTable {
     border-collapse: collapse; width: 100%;
@@ -75,12 +78,18 @@
   .name-cell input { text-align: left; min-width: 160px; }
   .collect-cell { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; }
   .collect-items { display: flex; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .collect-pair { display: flex; align-items: center; gap: 2px; }
   .collect-input { width: 48px !important; min-width: 48px !important; }
   .btn-add {
     background-color: #5cb85c; color: #fff; border: none; border-radius: 3px;
     width: 24px; height: 24px; font-size: 16px; line-height: 1; cursor: pointer; flex: none;
   }
   .btn-add:hover { background-color: #449d44; }
+  .btn-del {
+    background-color: #d9534f; color: #fff; border: none; border-radius: 3px;
+    width: 22px; height: 28px; font-size: 14px; line-height: 1; cursor: pointer; flex: none;
+  }
+  .btn-del:hover { background-color: #c9302c; }
   .collect-sum { font-weight: bold; min-width: 26px; }
   .row-total { font-weight: bold; }
   .grade-auto { font-weight: bold; font-size: 15px; }
@@ -122,7 +131,7 @@
 
   <div class="navbar">
     <img class="logo" src="assets_1/img/weschoollogo.png" alt="logo">
-    <span class="brand">GPA Calculator System</span>
+    <span class="brand">GPA Calculator System<span class="brand-by">By Sonny Warin</span></span>
     <span class="spacer"></span>
     <span class="reset-link" id="resetBtn">รีเซ็ตข้อมูล</span>
   </div>
@@ -150,7 +159,8 @@
     </div>
 
     <div class="table-note">
-      ช่อง "คะแนนรวมหน่วย" กดปุ่ม + เพื่อเพิ่มช่องย่อยได้ไม่จำกัด (ผลรวมไม่เกิน 50)
+      <span>ช่อง "คะแนนรวมหน่วย" กดปุ่ม + เพื่อเพิ่มช่องย่อย (กด × เพื่อลบ) ผลรวมไม่เกิน 50</span>
+      <span class="maxcredit-ctl">หน่วยกิตรวมสูงสุด: <input id="maxCreditInput" type="number" min="0" step="0.5" value="16"></span>
     </div>
 
     <div class="table-wrap">
@@ -220,7 +230,6 @@
 
   var CREDIT_OPTIONS = [0, 0.5, 1, 1.5, 2];
   var TERMS = ["ม.4/1", "ม.4/2", "ม.5/1", "ม.5/2", "ม.6/1"];
-  var MAX_TOTAL_CREDIT = 16;
   var MAX_COLLECT = 50;
   var MAX_MID = 20;
   var MAX_FINAL = 30;
@@ -230,6 +239,7 @@
   function defaultState() {
     return {
       heading: DEFAULT_HEADING,
+      maxCredit: 16,
       student: { name: "", id: "", room: "", no: "" },
       rows: SUBJECTS.map(function (s) {
         return {
@@ -256,6 +266,7 @@
       if (!s.student) s.student = { name: "", id: "", room: "", no: "" };
       if (!s.gpax || s.gpax.length !== 5) s.gpax = ["", "", "", "", ""];
       if (typeof s.heading !== "string") s.heading = DEFAULT_HEADING;
+      if (typeof s.maxCredit !== "number" || isNaN(s.maxCredit) || s.maxCredit < 0) s.maxCredit = 16;
       return s;
     } catch (e) {
       return defaultState();
@@ -392,9 +403,9 @@
         var newVal = parseFloat(sel.value);
         var old = num(row.credit);
         var total = currentCreditTotal() - old + newVal;
-        if (total > MAX_TOTAL_CREDIT) {
+        if (newVal > old && total > state.maxCredit) {
           sel.value = String(old);
-          toast("รวมหน่วยกิตต้องไม่เกิน 16 (ปัจจุบัน " + currentCreditTotal().toFixed(1) + ")");
+          toast("รวมหน่วยกิตต้องไม่เกิน " + state.maxCredit + " (ปัจจุบัน " + currentCreditTotal().toFixed(1) + ")");
           return;
         }
         row.credit = newVal;
@@ -484,6 +495,8 @@
     var cont = document.getElementById("collect-items-" + i);
     cont.innerHTML = "";
     row.collects.forEach(function (v, j) {
+      var pair = document.createElement("div");
+      pair.className = "collect-pair";
       var inp = document.createElement("input");
       inp.type = "number";
       inp.className = "collect-input";
@@ -494,7 +507,17 @@
       inp.setAttribute("data-idx", j);
       inp.autocomplete = "off";
       inp.addEventListener("input", function () { onCollectInput(inp, i, j); });
-      cont.appendChild(inp);
+      pair.appendChild(inp);
+      if (row.collects.length > 1) {
+        var del = document.createElement("button");
+        del.type = "button";
+        del.className = "btn-del";
+        del.textContent = "\u00D7";
+        del.title = "ลบช่องนี้";
+        del.addEventListener("click", function () { removeCollect(i, j); });
+        pair.appendChild(del);
+      }
+      cont.appendChild(pair);
     });
     document.getElementById("collect-sum-" + i).textContent = collectSum(row);
   }
@@ -502,7 +525,16 @@
   function addCollect(i) {
     state.rows[i].collects.push("");
     renderCollect(i);
+    recalcRow(i);
     saveState();
+  }
+
+  function removeCollect(i, j) {
+    if (state.rows[i].collects.length <= 1) return;
+    state.rows[i].collects.splice(j, 1);
+    renderCollect(i);
+    recalcRow(i);
+    updateAll();
   }
 
   function onCollectInput(inp, i, j) {
@@ -636,6 +668,18 @@
     bindStudent("fId", "id");
     bindStudent("fRoom", "room");
     bindStudent("fNo", "no");
+
+    var maxCreditInput = document.getElementById("maxCreditInput");
+    maxCreditInput.value = state.maxCredit;
+    maxCreditInput.addEventListener("input", function () {
+      var v = parseFloat(maxCreditInput.value);
+      if (isNaN(v) || v < 0) return;
+      state.maxCredit = v;
+      saveState();
+    });
+    maxCreditInput.addEventListener("blur", function () {
+      maxCreditInput.value = state.maxCredit;
+    });
 
     buildTable();
     buildGPAX();
