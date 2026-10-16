@@ -26,9 +26,10 @@
   .navbar .spacer { flex: 1; }
   .navbar .reset-link { color: #FF3B30; cursor: pointer; font-size: 15px; font-weight: bold; user-select: none; }
   .navbar .reset-link:hover { text-decoration: underline; }
-  .navbar .help-link { color: #FF3B30; cursor: pointer; font-size: 15px; font-weight: bold; user-select: none; position: absolute; left: 50%; transform: translateX(-50%); }
+  .navbar .nav-center { position: absolute; left: 50%; transform: translateX(-50%); display: flex; align-items: center; gap: 18px; }
+  .navbar .help-link { color: #00FFFF; cursor: pointer; font-size: 14px; user-select: none; }
   .navbar .help-link:hover { text-decoration: underline; }
-  .navbar .ig-link { display: flex; align-items: center; margin-left: 16px; }
+  .navbar .ig-link { display: flex; align-items: center; }
   .navbar .ig-icon { height: 36px; width: 36px; border-radius: 8px; object-fit: cover; }
 
   /* ===== Help modal ===== */
@@ -151,10 +152,12 @@
   <div class="navbar">
     <img class="logo" src="assets_1/img/weschoollogo.png" alt="logo">
     <span class="brand">GPA Calculator System<span class="brand-by">By Sonny Warin</span></span>
+    <div class="nav-center">
+      <span class="help-link" id="helpBtn">ช่วยเหลือ?</span>
+      <a class="ig-link" href="https://www.instagram.com/sonnysiteup_/" target="_blank" rel="noopener" title="Instagram @sonnysiteup_"><img class="ig-icon" src="assets_1/img/instagram.png" alt="Instagram"></a>
+    </div>
     <span class="spacer"></span>
-    <span class="help-link" id="helpBtn">ช่วยเหลือ?</span>
     <span class="reset-link" id="resetBtn">รีเซ็ตข้อมูล</span>
-    <a class="ig-link" href="https://www.instagram.com/sonnysiteup_/" target="_blank" rel="noopener" title="Instagram @sonnysiteup_"><img class="ig-icon" src="assets_1/img/instagram.png" alt="Instagram"></a>
   </div>
 
   <div class="main">
